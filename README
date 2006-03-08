@@ -1,0 +1,12 @@
+This is a mirror of http://www.vim.org/scripts/script.php?script_id=1489
+
+The PluginKiller helps Vim plugin writers to determine which options that users might set that will cause problems with their plugin before their users do!
+
+To do this, the PluginKiller utilizes two instantiations of vim.  The first one is the pluginkiller server; it keeps a copy of the current potential trouble-making options.  The second vim is your working vim; in it you exercise your plugin.  Whenever your plugin works with the currently active trouble-makers, type :PKg (for PluginKiller-good).  This tells the PluginKiller server about the nice set of options it selected, and it responds with a new set.
+
+On the other hand, whenever your plugin isn't performing up to your exacting specifications, type :PKb (for PluginKiller-bad).  This command tells the PluginKiller server about the trouble it caused, and the PluginKiller responds with a smaller set of potential troublemakers.
+
+You'll need to repeat trying out your plugin and typing :PKg or :PKb until the PluginKiller has found the culprit option.  Its OK to quit the second vim and to use :PK to resume working with the PluginKiller server -- whether you need to quit and resume depends on how your plugin operates -- :PK just reloads the current settings that the PluginKiller wants to have tried out.
+
+(alpha/beta version available at http://mysite.verizon.net/astronaut/vim/index.html#PLUGINKILLER)
+

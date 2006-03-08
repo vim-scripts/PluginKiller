@@ -1,0 +1,148 @@
+*pluginkiller.txt*	Plugin Killer				Mar 08, 2006
+
+Author:  Charles E. Campbell, Jr.  <NdrOchip@ScampbellPfamily.AbizM>
+	  (remove NOSPAM from Campbell's email first)
+Copyright: (c) 2006 by Charles E. Campbell, Jr.	*pluginkiller-copyright*
+           The VIM LICENSE applies to pluginkiller.vim
+           (see |copyright|) except use "pluginkiller instead of "Vim"
+	   No warranty, express or implied.  Use At-Your-Own-Risk.
+
+==============================================================================
+1. Contents				*pluginkiller* *pluginkiller-contents*
+>
+	   Purpose: to help plugin writers find options that interfere
+	   with their plugin's operation before their users do.
+<
+	1. Contents..............................: |pluginkiller-contents|
+	2. Pluginkiller Manual...................: |pluginkiller-manual|
+	3. Pluginkiller Usage....................: |pluginkiller-usage|
+	4. Installing the PluginKiller...........: |pluginkiller-install|
+	5. History...............................: |pluginkiller-history|
+
+==============================================================================
+2. Pluginkiller Manual					*pluginkiller-manual*
+
+	pluginkiller -- a script to initialize the pluginkiller server
+		The script has the single command: >
+		vim --servername PLUGINKILLER pluginkiller.vim -c "so %"
+<       						*pluginkiller-pk*
+	:PK	This command loads the pluginkiller's settings into the
+		window under test -- ie. initializes your plugin with the
+		nasty pluginkiller's vim option settings.
+							*pluginkiller-pkr*
+	:PKr	Resets the pluginkiller so that all of its problem settings
+		are enabled.
+							*pluginkiller-pkg*
+	:PKg	Used in the pluginkiller.vim window; it indicates that the
+		settings yielded good behavior.
+							*pluginkiller-pkb*
+	:PKb	Used in the pluginkiller.vim window; it indicates that the
+		settings yielded bad behavior.
+
+==============================================================================
+3. Pluginkiller Usage					*pluginkiller-usage*
+
+	The PluginKiller helps ViM plugin writers to determine which options
+	that users might set that will cause problems with their plugin before
+	their users do!
+
+	To do this, the PluginKiller utilizes two instantiations of vim.  The
+	first one (see Step 1 below) is the pluginkiller server; it keeps a
+	copy of the current potential trouble-making options.  The second vim
+	is your working vim; in it you exercise your plugin.  Whenever your
+	plugin works with the currently active trouble-makers, type :PKg (for
+	PluginKiller-good).  This tells the PluginKiller server about the nice
+	set of options it selected, and it responds with a new set.
+
+	On the other hand, whenever your plugin isn't performing up to your
+	exacting specifications, type :PKb (for PluginKiller-bad).  This
+	command tells the PluginKiller server about the trouble it
+	caused, and the PluginKiller responds with a smaller set of potential
+	troublemakers.
+
+	You'll need to repeat trying out your plugin and typing :PKg or
+	:PKb until the PluginKiller has found the culprit option.  Its OK
+	to quit the second vim and to use :PK to resume working with the
+	PluginKiller server -- whether you need to quit and resume depends
+	on how your plugin operates -- :PK just reloads the current settings
+	that the PluginKiller wants to have tried out.
+
+						*pluginkiller-steps*
+	Step 1: type >
+			pluginkiller
+<		or type >
+			vim --servername PLUGINKILLER pluginkiller.vim -c "so %"
+<		(it is also acceptable to use gvim).  These commands set up
+		the pluginkiller server window.  The pluginkiller script is
+		included, but you need to have it on your path to use it.
+
+		Also, it uses a shell; I believe that sh, ksh, bash, zsh, and
+		cygwin are all acceptable.  In the latter case, you may have
+		to put a >
+			#! /cygdrive/c/cygwin/bin/bash
+<		line in at the top of the pluginkiller script.
+
+	Step 2: Bring up vim with a test file where you can exercise your
+		plugin with the pluginkiller
+
+	Step 3: With the vim editing the test file, and if you have
+	        AsNeeded.vim (you can get it from
+		http://vim.sourceforge.net/scripts/script.php?script_id=915) >
+		    :ANX PK
+<		Otherwise, >
+		    :so pluginkiller.vim
+		    :PK
+<
+	Step 4: In the test file:
+
+			UNTIL a message pops up about what option your plugin
+			      is having a problem with:
+
+			      Exercise/run your plugin
+			      
+			      IF your plugin works, type >
+				:PKg
+<			      Otherwise, type >
+				:PKb
+<
+		The :PKg (for good plugin behavior) and the :PKb (for bad
+		plugin behavior) commands implement a binary search technique
+		to determine which option is giving your plugin trouble.  If,
+		as may sadly be the case, more than one such option is giving
+		your plugin fits, you may have to run through this process
+		several times.
+
+==============================================================================
+4. Installing the PluginKiller				*pluginkiller-install*
+
+	First, you really _don't_ want to install the pluginkiller in your
+	normal .vim/plugin directory.
+
+	1. Go to some place where you want to install the PluginKiller; I'll
+	   assume that that place is under .vim/:
+
+	   cd ~/.vim
+	   gunzip pluginkiller.tar.gz
+	   tar -oxvf pluginkiller.tar
+
+	   This will create >
+	   	PluginKiller/
+		     |- pluginkiller.vim
+		     \- pluginkiller
+		doc/
+		     \- pluginkiller.txt
+<
+	The directions under |pluginkiller-steps| give detailed information on
+	how to use the pluginkiller.
+
+	2. Enable the help: >
+	   	:helptags ~/.vim/doc
+<
+
+==============================================================================
+5. PluginKiller History					*pluginkiller-history*
+
+   	v1  Mar 08, 2006 * initial release
+
+	
+vim: ts=8
