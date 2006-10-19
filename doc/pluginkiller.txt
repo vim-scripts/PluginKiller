@@ -1,4 +1,4 @@
-*pluginkiller.txt*	Plugin Killer				Mar 08, 2006
+*pluginkiller.txt*	Plugin Killer				Oct 19, 2006
 
 Author:  Charles E. Campbell, Jr.  <NdrOchip@ScampbellPfamily.AbizM>
 	  (remove NOSPAM from Campbell's email first)
@@ -28,7 +28,8 @@ Copyright: (c) 2006 by Charles E. Campbell, Jr.	*pluginkiller-copyright*
 <       						*pluginkiller-pk*
 	:PK	This command loads the pluginkiller's settings into the
 		window under test -- ie. initializes your plugin with the
-		nasty pluginkiller's vim option settings.
+		nasty pluginkiller's vim option settings.  It will also
+		start up the PLUGINKILLER server as required.
 							*pluginkiller-pkr*
 	:PKr	Resets the pluginkiller so that all of its problem settings
 		are enabled.
@@ -49,15 +50,17 @@ Copyright: (c) 2006 by Charles E. Campbell, Jr.	*pluginkiller-copyright*
 	To do this, the PluginKiller utilizes two instantiations of vim.  The
 	first one (see Step 1 below) is the pluginkiller server; it keeps a
 	copy of the current potential trouble-making options.  The second vim
-	is your working vim; in it you exercise your plugin.  Whenever your
-	plugin works with the currently active trouble-makers, type :PKg (for
-	PluginKiller-good).  This tells the PluginKiller server about the nice
-	set of options it selected, and it responds with a new set.
+	is your working vim; in it you exercise your plugin.
+
+	Whenever your plugin works with the currently active trouble-makers,
+	type :PKg (for PluginKiller-good).  This tells the PluginKiller server
+	about the nice set of options it selected, and it responds with a new
+	set.
 
 	On the other hand, whenever your plugin isn't performing up to your
 	exacting specifications, type :PKb (for PluginKiller-bad).  This
-	command tells the PluginKiller server about the trouble it
-	caused, and the PluginKiller responds with a smaller set of potential
+	command tells the PluginKiller server about the trouble it caused, and
+	the PluginKiller responds with a smaller set of potential
 	troublemakers.
 
 	You'll need to repeat trying out your plugin and typing :PKg or
@@ -68,32 +71,17 @@ Copyright: (c) 2006 by Charles E. Campbell, Jr.	*pluginkiller-copyright*
 	that the PluginKiller wants to have tried out.
 
 						*pluginkiller-steps*
-	Step 1: type >
-			pluginkiller
-<		or type >
-			vim --servername PLUGINKILLER pluginkiller.vim -c "so %"
-<		(it is also acceptable to use gvim).  These commands set up
-		the pluginkiller server window.  The pluginkiller script is
-		included, but you need to have it on your path to use it.
+	Step 1: Bring up vim with a test file where you can exercise your
+		plugin with the pluginkiller.  Type >
+			:PK
+<		This command sets up the pluginkiller server window; it will
+		show >
+			" Plugin Killer Testing Options: start
+<		at the top of the screen in the server, followed by a number
+		of options that often cause problems with plugins.
 
-		Also, it uses a shell; I believe that sh, ksh, bash, zsh, and
-		cygwin are all acceptable.  In the latter case, you may have
-		to put a >
-			#! /cygdrive/c/cygwin/bin/bash
-<		line in at the top of the pluginkiller script.
-
-	Step 2: Bring up vim with a test file where you can exercise your
-		plugin with the pluginkiller
-
-	Step 3: With the vim editing the test file, and if you have
-	        AsNeeded.vim (you can get it from
-		http://vim.sourceforge.net/scripts/script.php?script_id=915) >
-		    :ANX PK
-<		Otherwise, >
-		    :so pluginkiller.vim
-		    :PK
-<
-	Step 4: In the test file:
+	Step 2: In the vim holding the test file (NOT the pluginkiller
+		server):
 
 			UNTIL a message pops up about what option your plugin
 			      is having a problem with:
@@ -112,18 +100,53 @@ Copyright: (c) 2006 by Charles E. Campbell, Jr.	*pluginkiller-copyright*
 		your plugin fits, you may have to run through this process
 		several times.
 
+		What I usually do is create two functions that look something
+		like this: >
+
+			fun! s:SaveUserSettings()
+			  let b:keep_optionname= &optionname
+			  ...
+			  setlocal [no]optionname
+			endfun
+			fun! s:RestoreUserSettings()
+			  let &l:optionname= b:keep_optionname
+			endfun
+<
+		At the top of any function in my plugin that's being called, I
+		call the s:SaveUserSettings() function.  This function saves
+		the user's current settings that caused my plugin difficulties
+		and then sets them to something that doesn't.  Before any
+		return and the end of the function I call
+		s:RestoreUserFunctions(), which, of course, restores the
+		user's settings.
+
+		The l:optionname is the local version of the option, and the
+		setlocal means I only change the local option to support my
+		plugin.
+
 ==============================================================================
 4. Installing the PluginKiller				*pluginkiller-install*
 
 	First, you really _don't_ want to install the pluginkiller in your
 	normal .vim/plugin directory.
 
-	1. Go to some place where you want to install the PluginKiller; I'll
-	   assume that that place is under .vim/:
+	1. You will need vimball v18 or later; you can get it from
 
-	   cd ~/.vim
-	   gunzip pluginkiller.tar.gz
-	   tar -oxvf pluginkiller.tar
+		http://mysite.verizon.net/astronaut/vim/index.html#VimFuncs
+		as "Vimball Archiver", or from
+		http://vim.sourceforge.net/scripts/script.php?script_id=1502
+
+	   Be sure to remove all vestiges of any earlier vimball versions
+	   such as comes with vim 7.0: typically, that means, as superuser: >
+
+	   	cd /usr/local/share/vim/vim70
+		/bin/rm plugin/vimball*.vim
+		/bin/rm autoload/vimball*.vim
+		/bin/rm doc/pi_vimball.txt
+<
+	2. vim pluginkiller.vba.gz
+	   :so %
+	   :q
 
 	   This will create >
 	   	PluginKiller/
@@ -142,6 +165,9 @@ Copyright: (c) 2006 by Charles E. Campbell, Jr.	*pluginkiller-copyright*
 ==============================================================================
 5. PluginKiller History					*pluginkiller-history*
 
+	v2  May 01, 2006 * the acd option is not always defined
+	    Oct 19, 2006 * :PK will initialize the PLUGINKILLER
+	                   server automatically, as required.
    	v1  Mar 08, 2006 * initial release
 
 	

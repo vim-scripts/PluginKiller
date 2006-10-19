@@ -1,2 +1,0 @@
-cd $VIMSCRIPT
-vim --servername PLUGINKILLER pluginkiller.vim -c "so %"
