@@ -1,4 +1,4 @@
-*pluginkiller.txt*	Plugin Killer				Oct 19, 2006
+*pluginkiller.txt*	Plugin Killer				Feb 07, 2009
 
 Author:  Charles E. Campbell, Jr.  <NdrOchip@ScampbellPfamily.AbizM>
 	  (remove NOSPAM from Campbell's email first)
@@ -22,17 +22,14 @@ Copyright: (c) 2006 by Charles E. Campbell, Jr.	*pluginkiller-copyright*
 ==============================================================================
 2. Pluginkiller Manual					*pluginkiller-manual*
 
-	pluginkiller -- a script to initialize the pluginkiller server
-		The script has the single command: >
-		vim --servername PLUGINKILLER pluginkiller.vim -c "so %"
-<       						*pluginkiller-pk*
+							*pluginkiller-pk*
 	:PK	This command loads the pluginkiller's settings into the
 		window under test -- ie. initializes your plugin with the
-		nasty pluginkiller's vim option settings.  It will also
+		pluginkiller's "nasty" vim option settings.  It will also
 		start up the PLUGINKILLER server as required.
 							*pluginkiller-pkr*
-	:PKr	Resets the pluginkiller so that all of its problem settings
-		are enabled.
+	:PKr	Resets the pluginkiller so that all of its problematic
+		settings are enabled.
 							*pluginkiller-pkg*
 	:PKg	Used in the pluginkiller.vim window; it indicates that the
 		settings yielded good behavior.
@@ -87,7 +84,7 @@ Copyright: (c) 2006 by Charles E. Campbell, Jr.	*pluginkiller-copyright*
 			      is having a problem with:
 
 			      Exercise/run your plugin
-			      
+
 			      IF your plugin works, type >
 				:PKg
 <			      Otherwise, type >
@@ -165,10 +162,12 @@ Copyright: (c) 2006 by Charles E. Campbell, Jr.	*pluginkiller-copyright*
 ==============================================================================
 5. PluginKiller History					*pluginkiller-history*
 
+	v3  Oct 10, 2007 * added more options for pluginkiller checkout:
+	                   acd, insertmode, num, spell
 	v2  May 01, 2006 * the acd option is not always defined
 	    Oct 19, 2006 * :PK will initialize the PLUGINKILLER
 	                   server automatically, as required.
    	v1  Mar 08, 2006 * initial release
 
-	
+
 vim: ts=8
